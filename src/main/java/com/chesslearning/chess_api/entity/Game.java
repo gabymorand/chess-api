@@ -1,9 +1,6 @@
 package com.chesslearning.chess_api.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,33 +20,57 @@ public class Game {
     private User playerBlack;
     
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private GameResult result;
     
     @Column(columnDefinition = "TEXT")
-    @NotNull(message = "PGN data is required")
-    @Size(min = 10, message = "PGN data too short")
     private String pgnData;
     
-    @Column(name = "game_date", nullable = false)
+    @Column(name = "game_date")
     private LocalDateTime gameDate;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
-    // Constructors
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
     public Game() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.gameDate = LocalDateTime.now();
     }
     
-    public Game(User playerWhite, User playerBlack, String pgnData) {
+    public Game(User playerWhite, User playerBlack, GameResult result, String pgnData, LocalDateTime gameDate) {
         this();
         this.playerWhite = playerWhite;
         this.playerBlack = playerBlack;
+        this.result = result;
         this.pgnData = pgnData;
+        this.gameDate = gameDate;
     }
     
-    // Getters and Setters
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -96,13 +117,5 @@ public class Game {
     
     public void setGameDate(LocalDateTime gameDate) {
         this.gameDate = gameDate;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
