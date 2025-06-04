@@ -29,12 +29,17 @@ public class Game {
     @Column(name = "game_date")
     private LocalDateTime gameDate;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    // Constructeurs
     public Game() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -50,20 +55,9 @@ public class Game {
         this.gameDate = gameDate;
     }
     
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public Game(User playerWhite, User playerBlack, GameResult result, String pgnData, LocalDateTime gameDate, Tournament tournament) {
+        this(playerWhite, playerBlack, result, pgnData, gameDate);
+        this.tournament = tournament;
     }
     
     @PreUpdate
@@ -117,5 +111,30 @@ public class Game {
     
     public void setGameDate(LocalDateTime gameDate) {
         this.gameDate = gameDate;
+    }
+    
+
+    public Tournament getTournament() {
+        return tournament;
+    }
+    
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
