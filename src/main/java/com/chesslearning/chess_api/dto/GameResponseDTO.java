@@ -14,7 +14,6 @@ public class GameResponseDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    // Constructeurs
     public GameResponseDTO() {}
     
     public GameResponseDTO(Long id, UserResponseDTO playerWhite, UserResponseDTO playerBlack, 
@@ -30,7 +29,6 @@ public class GameResponseDTO {
         this.updatedAt = updatedAt;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -21,7 +21,7 @@ public class UserCreateDTO {
     
     private Role role = Role.USER;
     
-    // Constructeurs
+
     public UserCreateDTO() {}
     
     public UserCreateDTO(String username, String email, String password, Role role) {
@@ -31,7 +31,7 @@ public class UserCreateDTO {
         this.role = role;
     }
     
-    // Getters and Setters
+
     public String getUsername() {
         return username;
     }

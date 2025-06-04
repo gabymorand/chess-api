@@ -16,7 +16,6 @@ public class GameCreateDTO {
     private String pgnData;
     private LocalDateTime gameDate = LocalDateTime.now();
     
-    // Constructeurs
     public GameCreateDTO() {}
     
     public GameCreateDTO(Long playerWhiteId, Long playerBlackId, GameResult result, String pgnData, LocalDateTime gameDate) {
@@ -26,8 +25,7 @@ public class GameCreateDTO {
         this.pgnData = pgnData;
         this.gameDate = gameDate;
     }
-    
-    // Getters and Setters
+
     public Long getPlayerWhiteId() {
         return playerWhiteId;
     }

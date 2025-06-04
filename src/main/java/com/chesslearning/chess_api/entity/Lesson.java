@@ -45,7 +45,7 @@ public class Lesson {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Constructors
+
     public Lesson() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -58,8 +58,7 @@ public class Lesson {
         this.level = level;
         this.coach = coach;
     }
-    
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

@@ -1,38 +1,59 @@
 package com.chesslearning.chess_api.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class MoveCreateDTO {
+public class MoveResponseDTO {
     
-    @NotNull(message = "Game ID is required")
-    private Long gameId;
-    
-    @NotNull(message = "Move number is required")
+    private Long id;
+    private GameResponseDTO game;
     private Integer moveNumber;
-    
-    @NotBlank(message = "Move notation is required")
     private String moveNotation;
-    
     private String fromSquare;
     private String toSquare;
     private String pieceMoved;
     private String pieceCaptured;
-    private Boolean isCheck = false;
-    private Boolean isCheckmate = false;
-    private Boolean isCastling = false;
-    private LocalDateTime moveTime = LocalDateTime.now();
+    private Boolean isCheck;
+    private Boolean isCheckmate;
+    private Boolean isCastling;
+    private LocalDateTime moveTime;
+    private LocalDateTime createdAt;
     
 
-    public MoveCreateDTO() {}
+    public MoveResponseDTO() {}
     
-    public Long getGameId() {
-        return gameId;
+    public MoveResponseDTO(Long id, GameResponseDTO game, Integer moveNumber, String moveNotation,
+                          String fromSquare, String toSquare, String pieceMoved, String pieceCaptured,
+                          Boolean isCheck, Boolean isCheckmate, Boolean isCastling,
+                          LocalDateTime moveTime, LocalDateTime createdAt) {
+        this.id = id;
+        this.game = game;
+        this.moveNumber = moveNumber;
+        this.moveNotation = moveNotation;
+        this.fromSquare = fromSquare;
+        this.toSquare = toSquare;
+        this.pieceMoved = pieceMoved;
+        this.pieceCaptured = pieceCaptured;
+        this.isCheck = isCheck;
+        this.isCheckmate = isCheckmate;
+        this.isCastling = isCastling;
+        this.moveTime = moveTime;
+        this.createdAt = createdAt;
     }
     
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public GameResponseDTO getGame() {
+        return game;
+    }
+    
+    public void setGame(GameResponseDTO game) {
+        this.game = game;
     }
     
     public Integer getMoveNumber() {
@@ -113,5 +134,13 @@ public class MoveCreateDTO {
     
     public void setMoveTime(LocalDateTime moveTime) {
         this.moveTime = moveTime;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

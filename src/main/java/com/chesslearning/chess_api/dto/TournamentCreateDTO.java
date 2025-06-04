@@ -26,11 +26,10 @@ public class TournamentCreateDTO {
     
     @NotNull(message = "Organizer ID is required")
     private Long organizerId;
-    
-    // Constructeurs
+
     public TournamentCreateDTO() {}
     
-    // Getters and Setters
+
     public String getName() {
         return name;
     }

@@ -18,7 +18,6 @@ public class CommentCreateDTO {
     
     private Integer moveNumber;
     
-    // Constructeurs
     public CommentCreateDTO() {}
     
     public CommentCreateDTO(Long gameId, Long authorId, String content, Integer moveNumber) {
@@ -28,7 +27,6 @@ public class CommentCreateDTO {
         this.moveNumber = moveNumber;
     }
     
-    // Getters and Setters
     public Long getGameId() {
         return gameId;
     }

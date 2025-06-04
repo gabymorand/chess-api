@@ -12,8 +12,7 @@ public class RankingCreateDTO {
     private Integer gamesWon = 0;
     private Integer gamesLost = 0;
     private Integer gamesDrawn = 0;
-    
-    // Constructeurs
+
     public RankingCreateDTO() {}
     
     public RankingCreateDTO(Long userId, Integer eloRating) {
@@ -21,7 +20,7 @@ public class RankingCreateDTO {
         this.eloRating = eloRating;
     }
     
-    // Getters and Setters
+
     public Long getUserId() {
         return userId;
     }
