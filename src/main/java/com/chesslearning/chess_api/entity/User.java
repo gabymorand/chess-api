@@ -39,6 +39,17 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
     
+    // NOUVEAUX CHAMPS AJOUTÉS
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name cannot exceed 50 characters")
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
+    
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name cannot exceed 50 characters")
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.USER;
@@ -60,6 +71,17 @@ public class User implements UserDetails {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
+    }
+    
+    // NOUVEAU CONSTRUCTEUR COMPLET
+    public User(String username, String email, String password, String firstName, String lastName, Role role) {
+        this();
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.role = role;
     }
     
@@ -127,6 +149,23 @@ public class User implements UserDetails {
         this.password = password;
     }
     
+    // NOUVEAUX GETTERS/SETTERS
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    
+    public String getLastName() {
+        return lastName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
     public Role getRole() {
         return role;
     }
@@ -154,5 +193,19 @@ public class User implements UserDetails {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    // toString method pour debug
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", role=" + role +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
