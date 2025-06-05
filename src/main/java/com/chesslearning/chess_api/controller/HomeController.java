@@ -1,15 +1,23 @@
 package com.chesslearning.chess_api.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@RestController
+@Controller
 public class HomeController {
 
     @GetMapping("/")
-    public Map<String, Object> home() {
+    public String home() {
+        return "index"; // Retourne la vue index.html
+    }
+
+    @GetMapping("/api")
+    @ResponseBody
+    public Map<String, Object> apiInfo() {
         return Map.of(
             "message", "🏆 Chess API - Projet étudiant terminé !",
             "status", "✅ Online",
@@ -29,6 +37,7 @@ public class HomeController {
     }
 
     @GetMapping("/health")
+    @ResponseBody
     public Map<String, String> health() {
         return Map.of(
             "status", "UP",

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♟️ Chess API - Gabriel Morand</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            display: inline-block;
+            background: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .nav-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .nav-card p {
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tech-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .title {
+                font-size: 2rem;
+            }
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">♟️ Chess API</h1>
+            <p class="subtitle">Projet étudiant - API REST complète pour jeu d'échecs</p>
+            <div class="status">✅ Online & Deployed</div>
+        </div>
+        
+        <div class="nav-grid">
+            <div class="nav-card" onclick="window.open('/swagger-ui.html', '_blank')">
+                <h3>📚 Documentation Swagger</h3>
+                <p>Interface interactive pour tester tous les endpoints de l'API</p>
+                <a href="/swagger-ui.html" target="_blank" class="btn">Ouvrir Swagger</a>
+            </div>
+            
+            <div class="nav-card" onclick="window.open('/v3/api-docs', '_blank')">
+                <h3>📋 API Docs (JSON)</h3>
+                <p>Documentation OpenAPI au format JSON</p>
+                <a href="/v3/api-docs" target="_blank" class="btn">Voir JSON</a>
+            </div>
+            
+            <div class="nav-card" onclick="window.open('/api', '_blank')">
+                <h3>🔗 Info API</h3>
+                <p>Informations détaillées sur l'API et ses endpoints</p>
+                <a href="/api" target="_blank" class="btn">Voir Info</a>
+            </div>
+            
+            <div class="nav-card" onclick="window.open('/health', '_blank')">
+                <h3>❤️ Health Check</h3>
+                <p>Statut de santé de l'application</p>
+                <a href="/health" target="_blank" class="btn">Vérifier</a>
+            </div>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <h3 style="color: #FFD700; margin-bottom: 15px;">🎯 Endpoints principaux</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>🔐 Authentication</strong><br>
+                    <small>/api/auth/register<br>/api/auth/login</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>👥 Users</strong><br>
+                    <small>/api/users</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>♟️ Games</strong><br>
+                    <small>/api/games</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>🏆 Tournaments</strong><br>
+                    <small>/api/tournaments</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>🤖 Mistral AI</strong><br>
+                    <small>/api/ai/chat</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;">
+                    <strong>📊 Rankings</strong><br>
+                    <small>/api/rankings</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>👨‍💻 Développé par Gabriel Morand</strong></p>
+            <div class="tech-stack">
+                <span class="tech-badge">Spring Boot 3</span>
+                <span class="tech-badge">JWT Security</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">Mistral AI</span>
+                <span class="tech-badge">Railway Deploy</span>
+                <span class="tech-badge">Swagger OpenAPI</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
