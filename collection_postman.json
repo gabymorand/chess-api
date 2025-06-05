@@ -1,0 +1,689 @@
+{
+    "info": {
+        "_postman_id": "chess-api-collection",
+        "name": "♟️ Chess API - Gabriel Morand",
+        "description": "Collection complète pour tester l'API Chess avec JWT, CRUD et IA Mistral",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{jwt_token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "https://chess-api.up.railway.app",
+            "type": "string"
+        },
+        {
+            "key": "jwt_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "game_id",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "🏠 Home & Health",
+            "item": [
+                {
+                    "name": "🏠 Homepage",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/",
+                            "host": ["{{base_url}}"],
+                            "path": [""]
+                        }
+                    }
+                },
+                {
+                    "name": "❤️ Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": ["{{base_url}}"],
+                            "path": ["health"]
+                        }
+                    }
+                },
+                {
+                    "name": "📖 README",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/readme",
+                            "host": ["{{base_url}}"],
+                            "path": ["readme"]
+                        }
+                    }
+                },
+                {
+                    "name": "🔍 API Info",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/info",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "info"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🔐 Authentication",
+            "item": [
+                {
+                    "name": "📝 Register User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.id) {",
+                                    "        pm.collectionVariables.set('user_id', responseJson.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "register"]
+                        }
+                    }
+                },
+                {
+                    "name": "🔑 Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.token) {",
+                                    "        pm.collectionVariables.set('jwt_token', responseJson.token);",
+                                    "        console.log('JWT Token saved:', responseJson.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "login"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👥 Users Management",
+            "item": [
+                {
+                    "name": "📋 Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users"]
+                        }
+                    }
+                },
+                {
+                    "name": "👤 Get User by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{{user_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users", "{{user_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "🔍 Get User by Username",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/username/testuser",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users", "username", "testuser"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "♟️ Games Management",
+            "item": [
+                {
+                    "name": "📋 Get All Games",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/games",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "games"]
+                        }
+                    }
+                },
+                {
+                    "name": "🆕 Create New Game",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.id) {",
+                                    "        pm.collectionVariables.set('game_id', responseJson.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"whitePlayerId\": 1,\n    \"blackPlayerId\": 2,\n    \"status\": \"ACTIVE\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/games",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "games"]
+                        }
+                    }
+                },
+                {
+                    "name": "🎯 Get Game by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/games/{{game_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "games", "{{game_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "🏁 Get Games by Result",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/games/result/WHITE_WINS",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "games", "result", "WHITE_WINS"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🎯 Moves Management",
+            "item": [
+                {
+                    "name": "📋 Get All Moves",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/moves",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "moves"]
+                        }
+                    }
+                },
+                {
+                    "name": "🆕 Create Move",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"gameId\": {{game_id}},\n    \"moveNumber\": 1,\n    \"moveNotation\": \"e4\",\n    \"fromSquare\": \"e2\",\n    \"toSquare\": \"e4\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/moves",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "moves"]
+                        }
+                    }
+                },
+                {
+                    "name": "♟️ Get Moves by Game",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/moves/game/{{game_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "moves", "game", "{{game_id}}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🏆 Tournaments",
+            "item": [
+                {
+                    "name": "📋 Get All Tournaments",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/tournaments",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "tournaments"]
+                        }
+                    }
+                },
+                {
+                    "name": "🆕 Create Tournament",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Tournoi Test Postman\",\n    \"description\": \"Tournoi créé via Postman\",\n    \"startDate\": \"2025-06-10T10:00:00\",\n    \"endDate\": \"2025-06-10T18:00:00\",\n    \"maxParticipants\": 16\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/tournaments",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "tournaments"]
+                        }
+                    }
+                },
+                {
+                    "name": "🔜 Get Upcoming Tournaments",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/tournaments/upcoming",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "tournaments", "upcoming"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "💬 Comments",
+            "item": [
+                {
+                    "name": "📋 Get Comments by Game",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/comments/game/{{game_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "comments", "game", "{{game_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "🆕 Create Comment",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"gameId\": {{game_id}},\n    \"content\": \"Excellent coup d'ouverture !\",\n    \"moveNumber\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/comments",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "comments"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "📊 Rankings",
+            "item": [
+                {
+                    "name": "📋 Get All Rankings",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/rankings",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "rankings"]
+                        }
+                    }
+                },
+                {
+                    "name": "🏆 Get Leaderboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/rankings/leaderboard",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "rankings", "leaderboard"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🤖 Mistral AI",
+            "item": [
+                {
+                    "name": "💬 Chat with AI",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"message\": \"Explique-moi les principes de base de l'ouverture aux échecs\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/chat",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "chat"]
+                        }
+                    }
+                },
+                {
+                    "name": "🔍 Analyze Game",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/analyze/game/{{game_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "analyze", "game", "{{game_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "💡 Suggest Move",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"currentPosition\": \"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/suggest/move/{{game_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "suggest", "move", "{{game_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "📝 Explain Move",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"move\": \"e4\",\n    \"position\": \"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/explain/move",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "explain", "move"]
+                        }
+                    }
+                },
+                {
+                    "name": "🎯 Generate Quiz",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/quiz?difficulty=beginner",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "quiz"],
+                            "query": [
+                                {
+                                    "key": "difficulty",
+                                    "value": "beginner"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "💪 Get Improvement Tips",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"playerStats\": \"Joueur débutant, 1200 ELO, problèmes en ouverture et finales\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/tips/improvement",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "tips", "improvement"]
+                        }
+                    }
+                },
+                {
+                    "name": "❤️ AI Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/ai/health",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "ai", "health"]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
