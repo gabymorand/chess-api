@@ -2,7 +2,7 @@ package com.chesslearning.chess_api.dto;
 
 import com.chesslearning.chess_api.entity.Role;
 
-public class AuthResponse {
+public class AuthResponseDTO {
     
     private String token;
     private String refreshToken;
@@ -14,9 +14,9 @@ public class AuthResponse {
     private long expiresIn;
     
     // Constructeurs
-    public AuthResponse() {}
+    public AuthResponseDTO() {}
     
-    public AuthResponse(String token, String refreshToken, Long userId, String username, String email, Role role, long expiresIn) {
+    public AuthResponseDTO(String token, String refreshToken, Long userId, String username, String email, Role role, long expiresIn) {
         this.token = token;
         this.refreshToken = refreshToken;
         this.userId = userId;

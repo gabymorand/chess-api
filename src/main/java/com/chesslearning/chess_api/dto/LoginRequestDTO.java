@@ -2,17 +2,17 @@ package com.chesslearning.chess_api.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class LoginRequest {
+public class LoginRequestDTO {
     
     @NotBlank(message = "Username is required")
     private String username;
     
     @NotBlank(message = "Password is required")
     private String password;
+
+    public LoginRequestDTO() {}
     
-    public LoginRequest() {}
-    
-    public LoginRequest(String username, String password) {
+    public LoginRequestDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }

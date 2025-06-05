@@ -1,8 +1,8 @@
 package com.chesslearning.chess_api.service;
 
-import com.chesslearning.chess_api.dto.AuthResponse;
-import com.chesslearning.chess_api.dto.LoginRequest;
-import com.chesslearning.chess_api.dto.RegisterRequest;
+import com.chesslearning.chess_api.dto.AuthResponseDTO;
+import com.chesslearning.chess_api.dto.LoginRequestDTO;
+import com.chesslearning.chess_api.dto.RegisterRequestDTO;
 import com.chesslearning.chess_api.entity.User;
 import com.chesslearning.chess_api.repository.UserRepository;
 import com.chesslearning.chess_api.security.JwtUtil;
@@ -38,7 +38,7 @@ public class AuthService {
     @Value("${jwt.expiration}")
     private Long jwtExpiration;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponseDTO register(RegisterRequestDTO request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -60,7 +60,7 @@ public class AuthService {
         String jwtToken = jwtUtil.generateToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-        return new AuthResponse(
+        return new AuthResponseDTO(
                 jwtToken,
                 refreshToken,
                 savedUser.getId(),
@@ -71,7 +71,7 @@ public class AuthService {
         );
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponseDTO login(LoginRequestDTO request) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -87,7 +87,7 @@ public class AuthService {
         String jwtToken = jwtUtil.generateToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-        return new AuthResponse(
+        return new AuthResponseDTO(
                 jwtToken,
                 refreshToken,
                 user.getId(),
@@ -98,7 +98,7 @@ public class AuthService {
         );
     }
 
-    public AuthResponse refreshToken(String refreshToken) {
+    public AuthResponseDTO refreshToken(String refreshToken) {
         String username = jwtUtil.extractUsername(refreshToken);
         
         if (username != null) {
@@ -111,7 +111,7 @@ public class AuthService {
                 String newJwtToken = jwtUtil.generateToken(userDetails);
                 String newRefreshToken = jwtUtil.generateRefreshToken(userDetails);
                 
-                return new AuthResponse(
+                return new AuthResponseDTO(
                         newJwtToken,
                         newRefreshToken,
                         user.getId(),

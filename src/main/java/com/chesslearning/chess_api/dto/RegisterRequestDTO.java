@@ -3,7 +3,7 @@ package com.chesslearning.chess_api.dto;
 import com.chesslearning.chess_api.entity.Role;
 import jakarta.validation.constraints.*;
 
-public class RegisterRequest {
+public class RegisterRequestDTO {
     
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
@@ -27,9 +27,9 @@ public class RegisterRequest {
     
     private Role role = Role.USER; 
 
-    public RegisterRequest() {}
+    public RegisterRequestDTO() {}
     
-    public RegisterRequest(String username, String email, String password, String firstName, String lastName) {
+    public RegisterRequestDTO(String username, String email, String password, String firstName, String lastName) {
         this.username = username;
         this.email = email;
         this.password = password;

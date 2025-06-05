@@ -1,8 +1,8 @@
 package com.chesslearning.chess_api.controller;
 
-import com.chesslearning.chess_api.dto.AuthResponse;
-import com.chesslearning.chess_api.dto.LoginRequest;
-import com.chesslearning.chess_api.dto.RegisterRequest;
+import com.chesslearning.chess_api.dto.AuthResponseDTO;
+import com.chesslearning.chess_api.dto.LoginRequestDTO;
+import com.chesslearning.chess_api.dto.RegisterRequestDTO;
 import com.chesslearning.chess_api.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,9 +30,9 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid input or user already exists"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request) {
         try {
-            AuthResponse response = authService.register(request);
+            AuthResponseDTO response = authService.register(request);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -46,9 +46,9 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Invalid credentials"),
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         try {
-            AuthResponse response = authService.login(request);
+            AuthResponseDTO response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -62,10 +62,10 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Invalid refresh token"),
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
-    public ResponseEntity<AuthResponse> refreshToken(
+    public ResponseEntity<AuthResponseDTO> refreshToken(
             @Parameter(description = "Refresh token") @RequestParam String refreshToken) {
         try {
-            AuthResponse response = authService.refreshToken(refreshToken);
+            AuthResponseDTO response = authService.refreshToken(refreshToken);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
