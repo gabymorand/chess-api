@@ -35,15 +35,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // pub
-                        .requestMatchers("/", "/health").permitAll()
+                        // ENDPOINTS PUBLICS
+                        .requestMatchers("/", "/health", "/readme", "/api/info").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         
                         // Documentation publique
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         
-                        // Endpoints de lecture publics 
+                        // Endpoints de lecture publics
                         .requestMatchers("GET", "/api/users").permitAll()
                         .requestMatchers("GET", "/api/users/{id}").permitAll()
                         .requestMatchers("GET", "/api/users/username/{username}").permitAll()
@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("GET", "/api/moves/{id}").permitAll()
                         .requestMatchers("GET", "/api/moves/game/{gameId}").permitAll()
                         
-                        // Endpoints utilisateur authentifié (USER role)
+                        // Endpoints utilisateur authentifié
                         .requestMatchers("POST", "/api/comments").hasRole("USER")
                         .requestMatchers("PUT", "/api/comments/{id}").hasRole("USER")
                         .requestMatchers("DELETE", "/api/comments/{id}").hasRole("USER")
@@ -73,7 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("POST", "/api/tournaments").hasRole("USER")
                         .requestMatchers("PUT", "/api/tournaments/{id}").hasRole("USER")
                         
-                        // Endpoints AI - besoin user auth 
+                        // Endpoints AI
                         .requestMatchers("POST", "/api/ai/chat").hasRole("USER")
                         .requestMatchers("GET", "/api/ai/analyze/game/{gameId}").hasRole("USER")
                         .requestMatchers("POST", "/api/ai/suggest/move/{gameId}").hasRole("USER")
@@ -82,7 +82,7 @@ public class SecurityConfig {
                         .requestMatchers("POST", "/api/ai/tips/improvement").hasRole("USER")
                         .requestMatchers("GET", "/api/ai/health").permitAll()
                         
-                        // Endpoints admin besoin ADMIN role
+                        // Endpoints admin seulement
                         .requestMatchers("DELETE", "/api/users/{id}").hasRole("ADMIN")
                         .requestMatchers("DELETE", "/api/tournaments/{id}").hasRole("ADMIN")
                         .requestMatchers("DELETE", "/api/games/{id}").hasRole("ADMIN")
