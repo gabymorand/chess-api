@@ -35,9 +35,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // pub
+                        .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        
+                        // Documentation publique
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        
+                        // Endpoints de lecture publics 
                         .requestMatchers("GET", "/api/users").permitAll()
                         .requestMatchers("GET", "/api/users/{id}").permitAll()
                         .requestMatchers("GET", "/api/users/username/{username}").permitAll()
@@ -67,7 +73,16 @@ public class SecurityConfig {
                         .requestMatchers("POST", "/api/tournaments").hasRole("USER")
                         .requestMatchers("PUT", "/api/tournaments/{id}").hasRole("USER")
                         
-                        // Endpoints admin seulement (ADMIN role)
+                        // Endpoints AI - besoin user auth 
+                        .requestMatchers("POST", "/api/ai/chat").hasRole("USER")
+                        .requestMatchers("GET", "/api/ai/analyze/game/{gameId}").hasRole("USER")
+                        .requestMatchers("POST", "/api/ai/suggest/move/{gameId}").hasRole("USER")
+                        .requestMatchers("POST", "/api/ai/explain/move").hasRole("USER")
+                        .requestMatchers("GET", "/api/ai/quiz").hasRole("USER")
+                        .requestMatchers("POST", "/api/ai/tips/improvement").hasRole("USER")
+                        .requestMatchers("GET", "/api/ai/health").permitAll()
+                        
+                        // Endpoints admin besoin ADMIN role
                         .requestMatchers("DELETE", "/api/users/{id}").hasRole("ADMIN")
                         .requestMatchers("DELETE", "/api/tournaments/{id}").hasRole("ADMIN")
                         .requestMatchers("DELETE", "/api/games/{id}").hasRole("ADMIN")
@@ -76,7 +91,7 @@ public class SecurityConfig {
                         .requestMatchers("PUT", "/api/users/{id}/role").hasRole("ADMIN")
                         .requestMatchers("POST", "/api/rankings/update-stats").hasRole("ADMIN")
                         
-
+                        // Tout le reste nécessite une authentification
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
