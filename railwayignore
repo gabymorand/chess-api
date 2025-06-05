@@ -1,0 +1,9 @@
+# Ignorer les fichiers inutiles pour Railway
+*.md
+.git/
+.gitignore
+.vscode/
+.idea/
+logs/
+tmp/
+*.log
