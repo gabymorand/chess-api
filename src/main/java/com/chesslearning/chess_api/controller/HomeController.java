@@ -11,12 +11,17 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "index"; 
+        return "index";
     }
 
-    @GetMapping("/api")
+    @GetMapping("/readme")
+    public String readme() {
+        return "readme"; 
+    }
+
+    @GetMapping("/api/info")
     @ResponseBody
-    public Map<String, Object> projectInfo() {
+    public Map<String, Object> apiInfo() {
         return Map.of(
             "project", "♟️ Chess API - Spring Boot Project",
             "author", "Gabriel Morand",
@@ -42,19 +47,20 @@ public class HomeController {
                 "📚 Documentation Swagger interactive"
             ),
             
-            "links", Map.of(
-                "homepage", "/",
-                "swagger", "/swagger-ui.html",
-                "docs", "/v3/api-docs",
-                "health", "/health",
-                "github", "https://github.com/GabrielMorand/chess-api"
+            "quick_start", Map.of(
+                "register", "POST /api/auth/register",
+                "login", "POST /api/auth/login", 
+                "chat_ai", "POST /api/ai/chat (avec JWT)",
+                "get_games", "GET /api/games"
             ),
             
-            "endpoints_count", Map.of(
-                "total", "30+",
-                "public", "15",
-                "user_protected", "10", 
-                "admin_only", "5"
+            "endpoints_summary", Map.of(
+                "authentication", "2 endpoints",
+                "users", "4 endpoints",
+                "games", "6 endpoints",
+                "tournaments", "5 endpoints", 
+                "ai_features", "6 endpoints",
+                "rankings", "4 endpoints"
             )
         );
     }
@@ -65,7 +71,8 @@ public class HomeController {
         return Map.of(
             "status", "UP",
             "message", "♟️ Chess API is running perfectly!",
-            "timestamp", java.time.LocalDateTime.now().toString()
+            "timestamp", java.time.LocalDateTime.now().toString(),
+            "uptime", "Application healthy"
         );
     }
 }
