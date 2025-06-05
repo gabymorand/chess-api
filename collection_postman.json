@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "♟️ Chess API - Collection CORRIGÉE v2",
-        "description": "Collection qui fonctionne avec votre MistralController.java",
+        "name": "♟️ Chess API - Collection FINALE CORRIGÉE",
+        "description": "Collection complète qui fonctionne parfaitement avec votre Chess API",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -21,11 +21,12 @@
                             "    if (responseJson.token) {",
                             "        pm.collectionVariables.set('authToken', responseJson.token);",
                             "        console.log('🔑 TOKEN SAUVEGARDÉ:', responseJson.token.substring(0, 30) + '...');",
-                            "        console.log('✅ Prêt pour tester les autres endpoints !');",
                             "    }",
-                            "    if (responseJson.user) {",
-                            "        pm.collectionVariables.set('userId', responseJson.user.id);",
-                            "        console.log('👤 User ID:', responseJson.user.id);",
+                            "    // ✅ CORRECTION : Récupérer userId correctement",
+                            "    if (responseJson.userId) {",
+                            "        pm.collectionVariables.set('userId', responseJson.userId);",
+                            "        console.log('👤 User ID sauvegardé:', responseJson.userId);",
+                            "        console.log('✅ Prêt pour tester les autres endpoints !');",
                             "    }",
                             "}"
                         ]
@@ -97,7 +98,6 @@
                             "",
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
-                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
                             "    if (response && response.analysis) {",
                             "        console.log('💬 AI Response:', response.analysis.substring(0, 100) + '...');",
                             "    } else {",
@@ -144,7 +144,6 @@
                             "",
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
-                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
                             "    if (response && response.analysis) {",
                             "        console.log('🎯 Quiz Response:', response.analysis.substring(0, 100) + '...');",
                             "    } else {",
@@ -189,7 +188,6 @@
                             "",
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
-                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
                             "    if (response && response.analysis) {",
                             "        console.log('💡 Tips Response:', response.analysis.substring(0, 100) + '...');",
                             "    } else {",
@@ -234,7 +232,6 @@
                             "",
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
-                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
                             "    if (response && response.analysis) {",
                             "        console.log('🔍 Explanation:', response.analysis.substring(0, 100) + '...');",
                             "    } else {",
@@ -284,6 +281,9 @@
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
                             "    console.log('👤 Profile:', JSON.stringify(response, null, 2));",
+                            "} else if (pm.response.code === 403) {",
+                            "    console.log('❌ 403 Forbidden - Profile endpoint needs authentication');",
+                            "    console.log('Response:', pm.response.text());",
                             "}"
                         ]
                     }
@@ -319,6 +319,12 @@
                             "    const response = pm.response.json();",
                             "    pm.collectionVariables.set('gameId', response.id);",
                             "    console.log('♟️ Game created with ID:', response.id);",
+                            "} else {",
+                            "    console.log('❌ Game creation failed');",
+                            "    console.log('Status:', pm.response.code);",
+                            "    console.log('Response:', pm.response.text());",
+                            "    console.log('Request body was:', pm.request.body);",
+                            "    console.log('UserId variable:', pm.collectionVariables.get('userId'));",
                             "}"
                         ]
                     }
@@ -361,6 +367,11 @@
                             "if (pm.response.code === 201) {",
                             "    const response = pm.response.json();",
                             "    console.log('🎯 Move played:', JSON.stringify(response, null, 2));",
+                            "} else {",
+                            "    console.log('❌ Move failed');",
+                            "    console.log('Status:', pm.response.code);",
+                            "    console.log('Response:', pm.response.text());",
+                            "    console.log('GameId used:', pm.collectionVariables.get('gameId'));",
                             "}"
                         ]
                     }
@@ -402,12 +413,15 @@
                             "",
                             "if (pm.response.code === 200) {",
                             "    const response = pm.response.json();",
-                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
                             "    if (response && response.analysis) {",
                             "        console.log('🔍 Analysis:', response.analysis.substring(0, 100) + '...');",
                             "    } else {",
                             "        console.log('🔍 Analysis:', JSON.stringify(response, null, 2));",
                             "    }",
+                            "} else {",
+                            "    console.log('❌ Analysis failed');",
+                            "    console.log('Status:', pm.response.code);",
+                            "    console.log('Response:', pm.response.text());",
                             "}"
                         ]
                     }
