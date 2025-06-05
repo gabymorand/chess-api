@@ -40,61 +40,43 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 
-                // AJOUT CORS POUR SWAGGER
+                // CORS ACTIVÉ
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 
                 .authorizeHttpRequests(auth -> auth
-                        // ===== RÈGLES ABSOLUMENT PRIORITAIRES =====
+                        // ===== ENDPOINTS COMPLÈTEMENT PUBLICS =====
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/health", "/readme", "/api/info").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         
-                        // ===== ENDPOINTS DE LECTURE PUBLICS =====
-                        .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/username/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tournaments").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tournaments/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tournaments/upcoming").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/games").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/games/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/games/result/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/rankings").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/rankings/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/rankings/leaderboard").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments/game/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments/game/*/ordered").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/moves").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/moves/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/moves/game/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/ai/health").permitAll()
+                        // ===== TOUS LES GET PUBLICS (pour Postman) =====
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         
-                        // ===== ENDPOINTS USER (AUTHENTIFIÉ) =====
-                        .requestMatchers(HttpMethod.POST, "/api/comments").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/comments/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/comments/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/games").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/games/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/moves").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/moves/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/tournaments").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/tournaments/*").hasRole("USER")
+                        // ===== POST/PUT/DELETE pour utilisateurs authentifiés =====
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()  // Register
+                        .requestMatchers(HttpMethod.POST, "/api/comments").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/games").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/moves").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/tournaments").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/ai/**").hasAnyRole("USER", "ADMIN")
                         
-                        // ===== ENDPOINTS IA (AUTHENTIFIÉ) =====
-                        .requestMatchers(HttpMethod.POST, "/api/ai/chat").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/ai/analyze/game/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/ai/suggest/move/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/ai/explain/move").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/ai/quiz").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/ai/tips/improvement").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/comments/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/games/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/moves/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/tournaments/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "ADMIN")
                         
-                        // ===== ENDPOINTS ADMIN SEULEMENT =====
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/tournaments/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/games/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/moves/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/rankings/*").hasRole("ADMIN")
+                        // ===== DELETE ADMIN SEULEMENT =====
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tournaments/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/games/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/moves/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/rankings/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").hasAnyRole("USER", "ADMIN")
+                        
+                        // ===== ADMIN ENDPOINTS =====
                         .requestMatchers(HttpMethod.PUT, "/api/users/*/role").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/rankings/update-stats").hasRole("ADMIN")
                         
