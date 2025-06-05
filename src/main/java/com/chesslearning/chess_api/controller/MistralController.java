@@ -28,10 +28,9 @@ public class MistralController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "AI response generated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "500", description = "AI service error")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> chatWithAI(@Valid @RequestBody ChatRequestDTO request) {
         return mistralService.chatWithMistral(request.getMessage())
                 .map(response -> {
@@ -45,10 +44,9 @@ public class MistralController {
     @Operation(summary = "Analyze chess game", description = "Get AI analysis of a complete chess game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Game analysis completed"),
-            @ApiResponse(responseCode = "404", description = "Game not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "404", description = "Game not found")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> analyzeGame(
             @Parameter(description = "Game ID to analyze") @PathVariable Long gameId) {
         
@@ -64,10 +62,9 @@ public class MistralController {
     @Operation(summary = "Suggest next move", description = "Get AI suggestion for the next move in a game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Move suggestion generated"),
-            @ApiResponse(responseCode = "404", description = "Game not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "404", description = "Game not found")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> suggestMove(
             @Parameter(description = "Game ID") @PathVariable Long gameId,
             @Parameter(description = "Current board position") @RequestParam String position) {
@@ -84,10 +81,9 @@ public class MistralController {
     @Operation(summary = "Explain chess move", description = "Get detailed explanation of a chess move")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Move explanation generated"),
-            @ApiResponse(responseCode = "400", description = "Invalid move or position"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "400", description = "Invalid move or position")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> explainMove(
             @Parameter(description = "Chess move in algebraic notation") @RequestParam String move,
             @Parameter(description = "Board position") @RequestParam String position) {
@@ -104,10 +100,9 @@ public class MistralController {
     @Operation(summary = "Generate chess quiz", description = "Get a chess tactics quiz based on difficulty level")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quiz generated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid difficulty level"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "400", description = "Invalid difficulty level")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> generateQuiz(
             @Parameter(description = "Difficulty level: beginner, intermediate, advanced") 
             @RequestParam(defaultValue = "intermediate") String difficulty) {
@@ -128,10 +123,9 @@ public class MistralController {
     @Operation(summary = "Get improvement tips", description = "Get personalized chess improvement tips based on player statistics")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tips generated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid statistics"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "400", description = "Invalid statistics")
     })
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
     public Mono<ResponseEntity<ChessAnalysisResponse>> getImprovementTips(
             @Parameter(description = "Player statistics in text format") @RequestParam String stats) {
         
@@ -153,5 +147,19 @@ public class MistralController {
         return mistralService.chatWithMistral("Hello")
                 .map(response -> ResponseEntity.ok("Mistral AI service is operational"))
                 .onErrorReturn(ResponseEntity.status(503).body("Mistral AI service unavailable"));
+    }
+
+    // ✅ GARDE CES ENDPOINTS DE TEST POUR DEBUG
+    @GetMapping("/test")
+    @Operation(summary = "Test endpoint", description = "Test endpoint for debugging")
+    public ResponseEntity<String> testAuth() {
+        System.out.println("✅ MistralController test endpoint reached!");
+        return ResponseEntity.ok("AI endpoints are now public!");
+    }
+
+    @PostMapping("/test-post")
+    public ResponseEntity<String> testPost(@RequestBody String message) {
+        System.out.println("✅ POST test endpoint reached with: " + message);
+        return ResponseEntity.ok("POST works! Message: " + message);
     }
 }

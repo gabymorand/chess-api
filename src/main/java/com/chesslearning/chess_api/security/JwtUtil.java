@@ -32,10 +32,20 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    Map<String, Object> extraClaims = new HashMap<>();
+    
+    String role = userDetails.getAuthorities().iterator().next().getAuthority();
+        extraClaims.put("role", role); 
+        
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        if (!extraClaims.containsKey("role") && !userDetails.getAuthorities().isEmpty()) {
+            String role = userDetails.getAuthorities().iterator().next().getAuthority();
+            extraClaims.put("role", role);
+        }
+        
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

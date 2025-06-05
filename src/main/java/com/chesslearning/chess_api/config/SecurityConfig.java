@@ -1,6 +1,7 @@
 package com.chesslearning.chess_api.config;
 
 import com.chesslearning.chess_api.security.JwtAuthenticationFilter;
+import com.chesslearning.chess_api.security.CustomUserDetailsService;  // ✅ AJOUTE CETTE LIGNE
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,71 +24,54 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    private UserDetailsService userDetailsService;
-    
-    @Autowired
-    private CorsConfigurationSource corsConfigurationSource;
+    private CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                // ===== ENDPOINTS COMPLÈTEMENT PUBLICS =====
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/ai/**").permitAll()  // ✅ AI COMPLÈTEMENT PUBLIC
+                .requestMatchers("/", "/health", "/readme", "/api/info").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 
-                // CORS ACTIVÉ
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                // ===== ENDPOINTS PUBLICS EN LECTURE =====
+                .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/games").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/games/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/moves").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/moves/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/comments").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/tournaments").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/tournaments/**").permitAll()
                 
-                .authorizeHttpRequests(auth -> auth
-                        // ===== ENDPOINTS COMPLÈTEMENT PUBLICS =====
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/", "/health", "/readme", "/api/info").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        
-                        // ===== TOUS LES GET PUBLICS (pour Postman) =====
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        
-                        // ===== POST/PUT/DELETE pour utilisateurs authentifiés =====
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()  // Register
-                        .requestMatchers(HttpMethod.POST, "/api/comments").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/games").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/moves").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/tournaments").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/ai/**").hasAnyRole("USER", "ADMIN")
-                        
-                        .requestMatchers(HttpMethod.PUT, "/api/comments/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/games/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/moves/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/tournaments/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "ADMIN")
-                        
-                        // ===== DELETE ADMIN SEULEMENT =====
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/tournaments/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/games/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/moves/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/rankings/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").hasAnyRole("USER", "ADMIN")
-                        
-                        // ===== ADMIN ENDPOINTS =====
-                        .requestMatchers(HttpMethod.PUT, "/api/users/*/role").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/rankings/update-stats").hasRole("ADMIN")
-                        
-                        // Tout le reste nécessite une authentification
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                // ===== ENDPOINTS PROTÉGÉS EN ÉCRITURE =====
+                .requestMatchers(HttpMethod.POST, "/api/games").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/moves").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/comments").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/tournaments").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
+                
+                // ===== ENDPOINTS PROTÉGÉS EN MODIFICATION/SUPPRESSION =====
+                .requestMatchers(HttpMethod.PUT, "/api/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole("USER", "ADMIN")
+                
+                // ===== TOUT LE RESTE NÉCESSITE UNE AUTHENTIFICATION =====
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -95,14 +79,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
     }
 
     @Bean
