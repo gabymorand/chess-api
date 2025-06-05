@@ -1,6 +1,7 @@
 package com.chesslearning.chess_api.dto;
 
 import com.chesslearning.chess_api.entity.GameResult;
+import com.chesslearning.chess_api.entity.TimeControl;
 import java.time.LocalDateTime;
 
 public class GameResponseDTO {
@@ -9,6 +10,7 @@ public class GameResponseDTO {
     private UserResponseDTO playerWhite;
     private UserResponseDTO playerBlack;
     private GameResult result;
+    private TimeControl timeControl;
     private String pgnData;
     private LocalDateTime gameDate;
     private LocalDateTime createdAt;
@@ -17,12 +19,13 @@ public class GameResponseDTO {
     public GameResponseDTO() {}
     
     public GameResponseDTO(Long id, UserResponseDTO playerWhite, UserResponseDTO playerBlack, 
-                          GameResult result, String pgnData, LocalDateTime gameDate,
+                          GameResult result, TimeControl timeControl, String pgnData, LocalDateTime gameDate,
                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.playerWhite = playerWhite;
         this.playerBlack = playerBlack;
         this.result = result;
+        this.timeControl = timeControl;
         this.pgnData = pgnData;
         this.gameDate = gameDate;
         this.createdAt = createdAt;
@@ -59,6 +62,14 @@ public class GameResponseDTO {
     
     public void setResult(GameResult result) {
         this.result = result;
+    }
+    
+    public TimeControl getTimeControl() {
+        return timeControl;
+    }
+    
+    public void setTimeControl(TimeControl timeControl) {
+        this.timeControl = timeControl;
     }
     
     public String getPgnData() {

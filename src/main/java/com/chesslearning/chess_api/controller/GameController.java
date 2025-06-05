@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -37,16 +39,37 @@ public class GameController {
     @Autowired
     private UserService userService;
     
-    @Operation(summary = "Create a new game", description = "Creates a new chess game")
     @PostMapping
+    @Operation(summary = "Create a new game", description = "Creates a new chess game")
     public ResponseEntity<GameResponseDTO> createGame(@Valid @RequestBody GameCreateDTO gameCreateDTO) {
         try {
+            System.out.println("🔍 Starting game creation...");
+            System.out.println("PlayerWhiteId: " + gameCreateDTO.getPlayerWhiteId());
+            System.out.println("PlayerBlackId: " + gameCreateDTO.getPlayerBlackId());
+            System.out.println("TimeControl: " + gameCreateDTO.getTimeControl());
+            
+            // ✅ UTILISE LE MAPPER CORRIGÉ
             Game game = gameMapper.toEntity(gameCreateDTO);
+            System.out.println("✅ Game entity created via mapper");
+            
+            System.out.println("🔍 Calling gameService.createGame()...");
             Game createdGame = gameService.createGame(game);
+            System.out.println("✅ Game created in database with ID: " + createdGame.getId());
+            
+            System.out.println("🔍 Mapping to ResponseDTO...");
             GameResponseDTO response = gameMapper.toResponseDTO(createdGame);
+            System.out.println("✅ ResponseDTO created");
+            
             return new ResponseEntity<>(response, HttpStatus.CREATED);
+            
         } catch (RuntimeException e) {
+            System.out.println("❌ RuntimeException: " + e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            System.out.println("❌ General Exception: " + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     

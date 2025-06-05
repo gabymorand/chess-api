@@ -23,6 +23,10 @@ public class Game {
     @Column(nullable = false)
     private GameResult result;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "time_control", nullable = false)
+    private TimeControl timeControl;
+    
     @Column(columnDefinition = "TEXT")
     private String pgnData;
     
@@ -44,20 +48,24 @@ public class Game {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.gameDate = LocalDateTime.now();
+        this.result = GameResult.ONGOING;
     }
     
-    public Game(User playerWhite, User playerBlack, GameResult result, String pgnData, LocalDateTime gameDate) {
+    public Game(User playerWhite, User playerBlack, TimeControl timeControl) {
+        this();
+        this.playerWhite = playerWhite;
+        this.playerBlack = playerBlack;
+        this.timeControl = timeControl;
+    }
+    
+    public Game(User playerWhite, User playerBlack, GameResult result, TimeControl timeControl, String pgnData, LocalDateTime gameDate) {
         this();
         this.playerWhite = playerWhite;
         this.playerBlack = playerBlack;
         this.result = result;
+        this.timeControl = timeControl;
         this.pgnData = pgnData;
         this.gameDate = gameDate;
-    }
-    
-    public Game(User playerWhite, User playerBlack, GameResult result, String pgnData, LocalDateTime gameDate, Tournament tournament) {
-        this(playerWhite, playerBlack, result, pgnData, gameDate);
-        this.tournament = tournament;
     }
     
     @PreUpdate
@@ -65,6 +73,7 @@ public class Game {
         this.updatedAt = LocalDateTime.now();
     }
     
+    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -97,6 +106,14 @@ public class Game {
         this.result = result;
     }
     
+    public TimeControl getTimeControl() {
+        return timeControl;
+    }
+    
+    public void setTimeControl(TimeControl timeControl) {
+        this.timeControl = timeControl;
+    }
+    
     public String getPgnData() {
         return pgnData;
     }
@@ -113,7 +130,6 @@ public class Game {
         this.gameDate = gameDate;
     }
     
-
     public Tournament getTournament() {
         return tournament;
     }

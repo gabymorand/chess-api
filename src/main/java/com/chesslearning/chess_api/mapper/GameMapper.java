@@ -3,10 +3,13 @@ package com.chesslearning.chess_api.mapper;
 import com.chesslearning.chess_api.dto.GameCreateDTO;
 import com.chesslearning.chess_api.dto.GameResponseDTO;
 import com.chesslearning.chess_api.entity.Game;
+import com.chesslearning.chess_api.entity.GameResult;
 import com.chesslearning.chess_api.entity.User;
 import com.chesslearning.chess_api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class GameMapper {
@@ -20,7 +23,6 @@ public class GameMapper {
     public Game toEntity(GameCreateDTO dto) {
         Game game = new Game();
         
-        // Récupérer les utilisateurs par ID
         User playerWhite = userService.getUserById(dto.getPlayerWhiteId())
             .orElseThrow(() -> new RuntimeException("White player not found"));
         User playerBlack = userService.getUserById(dto.getPlayerBlackId())
@@ -28,9 +30,12 @@ public class GameMapper {
         
         game.setPlayerWhite(playerWhite);
         game.setPlayerBlack(playerBlack);
-        game.setResult(dto.getResult());
-        game.setPgnData(dto.getPgnData());
-        game.setGameDate(dto.getGameDate());
+        game.setTimeControl(dto.getTimeControl());
+        
+        // ✅ AUTO-GÉNÉRER les champs qui ne sont pas dans le DTO
+        game.setResult(GameResult.ONGOING);
+        game.setGameDate(LocalDateTime.now());
+        // pgnData reste null (optionnel)
         
         return game;
     }
@@ -41,6 +46,7 @@ public class GameMapper {
             userMapper.toResponseDTO(game.getPlayerWhite()),
             userMapper.toResponseDTO(game.getPlayerBlack()),
             game.getResult(),
+            game.getTimeControl(),
             game.getPgnData(),
             game.getGameDate(),
             game.getCreatedAt(),

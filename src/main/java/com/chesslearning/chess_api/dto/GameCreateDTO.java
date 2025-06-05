@@ -1,68 +1,32 @@
 package com.chesslearning.chess_api.dto;
 
-import com.chesslearning.chess_api.entity.GameResult;
+import com.chesslearning.chess_api.entity.TimeControl;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
+@Schema(description = "DTO for creating a new game")
 public class GameCreateDTO {
     
     @NotNull(message = "White player ID is required")
-    private Long playerWhiteId;
+    @Schema(description = "ID of the white player", example = "1")
+    private Long playerWhiteId;  
     
     @NotNull(message = "Black player ID is required")
-    private Long playerBlackId;
+    @Schema(description = "ID of the black player", example = "2") 
+    private Long playerBlackId;  
     
-    private GameResult result = GameResult.ONGOING;
-    private String pgnData;
-    private LocalDateTime gameDate = LocalDateTime.now();
+    @NotNull(message = "Time control is required")
+    @Schema(description = "Time control for the game", example = "BLITZ")
+    private TimeControl timeControl;
     
     public GameCreateDTO() {}
-    
-    public GameCreateDTO(Long playerWhiteId, Long playerBlackId, GameResult result, String pgnData, LocalDateTime gameDate) {
-        this.playerWhiteId = playerWhiteId;
-        this.playerBlackId = playerBlackId;
-        this.result = result;
-        this.pgnData = pgnData;
-        this.gameDate = gameDate;
-    }
 
-    public Long getPlayerWhiteId() {
-        return playerWhiteId;
-    }
+    public Long getPlayerWhiteId() { return playerWhiteId; }
+    public void setPlayerWhiteId(Long playerWhiteId) { this.playerWhiteId = playerWhiteId; }
     
-    public void setPlayerWhiteId(Long playerWhiteId) {
-        this.playerWhiteId = playerWhiteId;
-    }
+    public Long getPlayerBlackId() { return playerBlackId; }
+    public void setPlayerBlackId(Long playerBlackId) { this.playerBlackId = playerBlackId; }
     
-    public Long getPlayerBlackId() {
-        return playerBlackId;
-    }
-    
-    public void setPlayerBlackId(Long playerBlackId) {
-        this.playerBlackId = playerBlackId;
-    }
-    
-    public GameResult getResult() {
-        return result;
-    }
-    
-    public void setResult(GameResult result) {
-        this.result = result;
-    }
-    
-    public String getPgnData() {
-        return pgnData;
-    }
-    
-    public void setPgnData(String pgnData) {
-        this.pgnData = pgnData;
-    }
-    
-    public LocalDateTime getGameDate() {
-        return gameDate;
-    }
-    
-    public void setGameDate(LocalDateTime gameDate) {
-        this.gameDate = gameDate;
-    }
+    public TimeControl getTimeControl() { return timeControl; }
+    public void setTimeControl(TimeControl timeControl) { this.timeControl = timeControl; }
 }

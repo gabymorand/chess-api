@@ -1,315 +1,46 @@
 {
-  "info": {
-    "name": "♟️ Chess API - FIXED VARIABLES",
-    "description": "Fixed collection with proper variable handling",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
+  "info": { "name": "♟️ Chess API - CLEAN" },
   "variable": [
-    {
-      "key": "base_url",
-      "value": "https://chess-api.up.railway.app",
-      "type": "string"
-    },
-    {
-      "key": "jwt_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "user_id",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "user2_id",
-      "value": "2",
-      "type": "string"
-    },
-    {
-      "key": "game_id",
-      "value": "1",
-      "type": "string"
-    }
+    { "key": "base_url", "value": "https://chess-api.up.railway.app" },
+    { "key": "jwt_token", "value": "" }
   ],
   "item": [
     {
-      "name": "🔥 STEP 1 - CREATE USER & SAVE JWT",
-      "item": [
-        {
-          "name": "👤 1. Register Admin User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "console.log('=== REGISTER ADMIN TEST ===');",
-                  "console.log('Response Code:', pm.response.code);",
-                  "console.log('Response Body:', pm.response.text());",
-                  "",
-                  "if (pm.response.code === 200 || pm.response.code === 201) {",
-                  "    try {",
-                  "        const response = pm.response.json();",
-                  "        console.log('Parsed Response:', JSON.stringify(response, null, 2));",
-                  "        ",
-                  "        if (response.token) {",
-                  "            pm.collectionVariables.set('jwt_token', response.token);",
-                  "            console.log('✅ JWT Token saved:', response.token.substring(0, 50) + '...');",
-                  "        } else {",
-                  "            console.log('❌ No token in response');",
-                  "        }",
-                  "        ",
-                  "        if (response.user && response.user.id) {",
-                  "            pm.collectionVariables.set('user_id', response.user.id.toString());",
-                  "            console.log('✅ User ID saved:', response.user.id);",
-                  "        } else {",
-                  "            console.log('❌ No user.id in response');",
-                  "        }",
-                  "        ",
-                  "        pm.test('Registration successful', function () {",
-                  "            pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-                  "        });",
-                  "        ",
-                  "    } catch (e) {",
-                  "        console.log('❌ Error parsing response:', e);",
-                  "    }",
-                  "} else {",
-                  "    console.log('❌ Registration failed with code:', pm.response.code);",
-                  "}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"admin{{$timestamp}}\",\n  \"email\": \"admin{{$timestamp}}@test.com\",\n  \"password\": \"admin123\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Test\",\n  \"role\": \"ADMIN\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/register",
-              "host": ["{{base_url}}"],
-              "path": ["api", "auth", "register"]
-            }
-          }
-        },
-        {
-          "name": "🔍 2. Verify JWT Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "console.log('=== JWT VERIFICATION ===');",
-                  "const token = pm.collectionVariables.get('jwt_token');",
-                  "console.log('Current JWT Token:', token ? token.substring(0, 50) + '...' : 'NOT SET');",
-                  "console.log('User ID:', pm.collectionVariables.get('user_id'));",
-                  "",
-                  "pm.test('JWT Token is set', function () {",
-                  "    pm.expect(token).to.not.be.empty;",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
-            }
-          }
+      "name": "🔐 1. REGISTER (FIRST!)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"user{{$timestamp}}\",\n  \"email\": \"user{{$timestamp}}@test.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"ADMIN\"\n}"
         }
-      ]
+      }
     },
     {
-      "name": "👥 STEP 2 - TEST USER ENDPOINTS",
-      "item": [
-        {
-          "name": "📋 Get All Users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/users",
-              "host": ["{{base_url}}"],
-              "path": ["api", "users"]
-            }
-          }
-        },
-        {
-          "name": "👤 Get User by ID (WITH JWT)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "console.log('=== GET USER BY ID ===');",
-                  "console.log('URL:', pm.request.url.toString());",
-                  "console.log('User ID Variable:', pm.collectionVariables.get('user_id'));",
-                  "console.log('Response Code:', pm.response.code);",
-                  "console.log('Response:', pm.response.text());"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/users/{{user_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "users", "{{user_id}}"]
-            }
-          }
-        }
-      ]
+      "name": "👥 2. Get All Users (PUBLIC)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/users"
+      }
     },
     {
-      "name": "♟️ STEP 3 - CREATE GAME",
-      "item": [
-        {
-          "name": "🎮 Create Game (Self vs Self)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "console.log('=== CREATE GAME ===');",
-                  "console.log('Response Code:', pm.response.code);",
-                  "console.log('Response:', pm.response.text());",
-                  "",
-                  "if (pm.response.code === 200 || pm.response.code === 201) {",
-                  "    const response = pm.response.json();",
-                  "    if (response.id) {",
-                  "        pm.collectionVariables.set('game_id', response.id.toString());",
-                  "        console.log('✅ Game ID saved:', response.id);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"whitePlayerId\": {{user_id}},\n  \"blackPlayerId\": {{user_id}},\n  \"timeControl\": \"BLITZ\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/games",
-              "host": ["{{base_url}}"],
-              "path": ["api", "games"]
-            }
-          }
-        },
-        {
-          "name": "🎯 Get Game by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/games/{{game_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "games", "{{game_id}}"]
-            }
-          }
+      "name": "♟️ 3. Create Game (WITH JWT)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/games",
+        "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"whitePlayerId\": 1,\n  \"blackPlayerId\": 1,\n  \"timeControl\": \"BLITZ\"\n}"
         }
-      ]
+      }
     },
     {
-      "name": "🎯 STEP 4 - CREATE MOVE",
-      "item": [
-        {
-          "name": "♙ Create Move: e4",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "console.log('=== CREATE MOVE ===');",
-                  "console.log('Game ID:', pm.collectionVariables.get('game_id'));",
-                  "console.log('Response Code:', pm.response.code);",
-                  "console.log('Response:', pm.response.text());"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"gameId\": {{game_id}},\n  \"moveNumber\": 1,\n  \"fromSquare\": \"e2\",\n  \"toSquare\": \"e4\",\n  \"piece\": \"PAWN\",\n  \"algebraicNotation\": \"e4\",\n  \"isWhiteMove\": true\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/moves",
-              "host": ["{{base_url}}"],
-              "path": ["api", "moves"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "💚 STEP 5 - FINAL TESTS",
-      "item": [
-        {
-          "name": "🏆 Get Games by Time Control",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/games/time-control/BLITZ",
-              "host": ["{{base_url}}"],
-              "path": ["api", "games", "time-control", "BLITZ"]
-            }
-          }
-        },
-        {
-          "name": "💚 Final Health Check",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
-            }
-          }
-        }
-      ]
+      "name": "📋 4. Get All Games (PUBLIC)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/games"
+      }
     }
   ]
 }
