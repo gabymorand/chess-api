@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -48,10 +50,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.isTokenValid(jwt, userDetails)) {
+                // ✅ NOUVEAU : Extraire le rôle du TOKEN JWT, pas de la DB
+                String roleFromToken = jwtUtil.extractRole(jwt);  // ✅ Méthode à ajouter dans JwtUtil
+                
+                // ✅ Convertir "ROLE_ADMIN" → "ADMIN" pour hasAnyRole()
+                String cleanRole = roleFromToken.startsWith("ROLE_") ? 
+                    roleFromToken.substring(5) : roleFromToken;
+                
+                List<SimpleGrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + cleanRole)  // ✅ Spring Security format
+                );
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
-                        userDetails.getAuthorities()
+                        authorities  // ✅ Utilise les authorities du TOKEN, pas de la DB !
                 );
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
