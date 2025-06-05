@@ -1,61 +1,12 @@
-# ♟️ Chess API - Projet Spring Boot
+# ♟️ Chess API - Projet Spring Boot avec IA
 
-<div align="center">
+Une API complète pour la gestion d'échecs avec intelligence artificielle intégrée via Mistral AI.
 
-![Chess API](https://img.shields.io/badge/Chess-API-blue?style=for-the-badge&logo=chess.com)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-brightgreen?style=for-the-badge&logo=spring)
-![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge&logo=postgresql)
-![Railway](https://img.shields.io/badge/Railway-Deployed-purple?style=for-the-badge&logo=railway)
+## 🚀 **Technologies**
 
-**API REST complète pour la gestion d'un système d'échecs avec IA intégrée**
-
-[🌐 **Demo Live**](https://chess-api.up.railway.app/) | [📚 **Documentation**](https://chess-api.up.railway.app/swagger-ui.html) | [🤖 **IA Mistral**](https://chess-api.up.railway.app/api/ai/health)
-
-</div>
-
----
-
-## 🎯 **Aperçu du Projet**
-
-Cette API REST moderne permet de gérer un système complet d'échecs incluant :
-- 👥 **Gestion des utilisateurs** avec authentification JWT
-- ♟️ **Parties d'échecs** complètes avec historique des coups
-- 🏆 **Tournois** et système de classement
-- 🤖 **Intelligence Artificielle** intégrée (Mistral AI)
-- 📊 **Statistiques** et analyses de parties
-
-## ✨ **Fonctionnalités Principales**
-
-### 🔐 **Authentification & Sécurité**
-- JWT Token avec refresh
-- Rôles utilisateur (USER/ADMIN)
-- Sécurisation par endpoints
-- BCrypt password hashing
-
-### ♟️ **Gestion des Échecs**
-- Création et gestion de parties
-- Enregistrement des coups en notation algébrique
-- Système de commentaires sur les parties
-- Génération automatique de PGN
-
-### 🏆 **Système Compétitif**
-- Tournois avec inscriptions
-- Classement ELO automatique
-- Statistiques détaillées par joueur
-- Leaderboards dynamiques
-
-### 🤖 **IA Mistral Intégrée**
-- Chat intelligent sur les échecs
-- Analyse automatique de parties
-- Suggestions de coups optimaux
-- Quiz tactiques personnalisés
-- Conseils d'amélioration
-
-## 🛠️ **Technologies Utilisées**
-
-| Technologie | Version | Usage |
-|-------------|---------|-------|
+| **Technologie** | **Version** | **Description** |
+|-----------------|-------------|-----------------|
+| **Java** | 17+ | Langage principal |
 | **Spring Boot** | 3.5.0 | Framework principal |
 | **Spring Security** | 6.x | Authentification JWT |
 | **Spring Data JPA** | 3.x | Accès aux données |
@@ -65,13 +16,30 @@ Cette API REST moderne permet de gérer un système complet d'échecs incluant :
 | **Railway** | - | Déploiement cloud |
 | **Maven** | 3.8+ | Gestion des dépendances |
 
+## 🏗️ **Architecture**
+
+```
+src/
+├── main/java/com/chesslearning/chess_api/
+│   ├── config/          # Configuration (JWT, Mistral, WebClient)
+│   ├── controller/      # Contrôleurs REST
+│   ├── dto/            # Objets de transfert de données
+│   ├── entity/         # Entités JPA
+│   ├── repository/     # Repositories Spring Data
+│   ├── service/        # Logique métier
+│   └── security/       # Configuration sécurité
+└── resources/
+    ├── application.properties
+    └── static/
+```
+
 ## 🚀 **Installation & Démarrage**
 
 ### **Prérequis**
 - Java 17+
 - Maven 3.8+
 - PostgreSQL 15+
-- Clé API Mistral AI
+- Clé API Mistral AI ([console.mistral.ai](https://console.mistral.ai))
 
 ### **1. Cloner le projet**
 ```bash
@@ -79,21 +47,22 @@ git clone https://github.com/GabrielMorand/chess-api.git
 cd chess-api
 ```
 
-### **2. Configuration**
+### **2. Configuration locale**
 Créer un fichier `application-local.properties` :
 ```properties
 # Base de données locale
 spring.datasource.url=jdbc:postgresql://localhost:5432/chess_db
 spring.datasource.username=postgres
-spring.datasource.password=votre_password
+spring.datasource.password=your_password
 
 # JWT
-jwt.secret=votre_jwt_secret_key
+jwt.secret=your_jwt_secret_key_here
 jwt.expiration=86400000
 
 # Mistral AI
-mistral.api.key=votre_cle_mistral
+mistral.api.key=your_mistral_api_key_here
 mistral.api.url=https://api.mistral.ai/v1
+mistral.model=mistral-small
 ```
 
 ### **3. Lancer l'application**
@@ -102,148 +71,277 @@ mvn spring-boot:run
 ```
 
 ### **4. Accéder à l'application**
-- **Interface** : http://localhost:8080
-- **Swagger** : http://localhost:8080/swagger-ui.html
-- **API Docs** : http://localhost:8080/v3/api-docs
+- **API Locale** : http://localhost:8080
+- **API Production** : https://chess-api.up.railway.app
+- **Swagger UI** : /swagger-ui.html
+- **API Docs** : /v3/api-docs
 
-## 📋 **Structure des Endpoints**
+## 📋 **Endpoints API**
 
 ### 🔐 **Authentification**
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
-| POST | `/api/auth/register` | Inscription utilisateur |
-| POST | `/api/auth/login` | Connexion et récupération JWT |
+| `POST` | `/api/auth/register` | Créer un compte |
+| `POST` | `/api/auth/login` | Se connecter |
+| `POST` | `/api/auth/refresh` | Renouveler le token |
 
-### 👥 **Utilisateurs**
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/api/users` | Liste des utilisateurs | Public |
-| GET | `/api/users/{id}` | Détails utilisateur | Public |
-| PUT | `/api/users/{id}/role` | Modifier rôle | Admin |
+### 👤 **Utilisateurs**
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/users/me` | Profil utilisateur |
+| `PUT` | `/api/users/me` | Modifier le profil |
+| `GET` | `/api/users/{id}/stats` | Statistiques joueur |
 
-### ♟️ **Parties d'Échecs**
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/api/games` | Liste des parties | Public |
-| POST | `/api/games` | Créer partie | User |
-| GET | `/api/games/{id}` | Détails partie | Public |
-| PUT | `/api/games/{id}` | Modifier partie | User |
+### ♟️ **Parties**
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/api/games` | Créer une partie |
+| `GET` | `/api/games` | Lister les parties |
+| `GET` | `/api/games/{id}` | Détails d'une partie |
+| `PUT` | `/api/games/{id}` | Mettre à jour une partie |
 
-### 🎯 **Coups & Moves**
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/api/moves/game/{gameId}` | Coups d'une partie | Public |
-| POST | `/api/moves` | Enregistrer coup | User |
-
-### 🏆 **Tournois**
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/api/tournaments` | Liste tournois | Public |
-| POST | `/api/tournaments` | Créer tournoi | User |
-| GET | `/api/tournaments/upcoming` | Tournois à venir | Public |
+### 🎯 **Coups**
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/api/moves` | Jouer un coup |
+| `GET` | `/api/moves/game/{gameId}` | Coups d'une partie |
 
 ### 🤖 **Intelligence Artificielle**
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/api/ai/chat` | Chat avec l'IA | User |
-| GET | `/api/ai/analyze/game/{id}` | Analyser partie | User |
-| POST | `/api/ai/suggest/move/{id}` | Suggérer coup | User |
-| GET | `/api/ai/quiz` | Quiz tactique | User |
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/api/ai/chat` | Chat avec l'IA échecs |
+| `POST` | `/api/ai/analyze` | Analyser une partie |
+| `POST` | `/api/ai/suggest-move` | Suggérer un coup |
+| `POST` | `/api/ai/explain-move` | Expliquer un coup |
+| `POST` | `/api/ai/quiz` | Générer un quiz tactique |
+| `POST` | `/api/ai/improvement-tips` | Conseils d'amélioration |
+| `GET` | `/api/ai/health` | État du service IA |
 
-## 🧪 **Exemples d'Utilisation**
+## 🧪 **Collection Postman**
 
-### **Inscription d'un utilisateur**
-```bash
-curl -X POST "https://chess-api.up.railway.app/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "joueur1",
-    "email": "joueur1@email.com",
-    "password": "motdepasse123"
-  }'
+### **Variables d'environnement Postman :**
+```json
+{
+  "baseUrl": "https://chess-api.up.railway.app",
+  "localUrl": "http://localhost:8080",
+  "token": "{{authToken}}"
+}
 ```
 
-### **Chat avec l'IA**
-```bash
-curl -X POST "https://chess-api.up.railway.app/api/ai/chat" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "Explique-moi l'ouverture espagnole"
-  }'
+### **1. Authentification**
+
+#### **Inscription**
+```json
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
 ```
 
-## 📊 **Modèle de Données**
+#### **Connexion**
+```json
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
 
-### **Entités Principales**
-- **User** : Utilisateurs avec rôles et statistiques
-- **Game** : Parties avec joueurs et résultats
-- **Move** : Coups individuels en notation algébrique
-- **Tournament** : Tournois avec participants
-- **Comment** : Commentaires sur les parties
-- **Ranking** : Classements et statistiques ELO
+{
+  "username": "testuser",
+  "password": "password123"
+}
 
-## 🔧 **Configuration Avancée**
+// Script Post-Response Postman :
+pm.test("Login successful", function () {
+    pm.response.to.have.status(200);
+    const responseJson = pm.response.json();
+    pm.environment.set("authToken", responseJson.token);
+});
+```
 
-### **Variables d'Environnement**
+### **2. Tests IA Mistral**
+
+#### **Health Check IA**
+```json
+GET {{baseUrl}}/api/ai/health
+Authorization: Bearer {{token}}
+```
+
+#### **Chat avec l'IA**
+```json
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "message": "Explique-moi la défense française aux échecs"
+}
+```
+
+#### **Quiz Tactique**
+```json
+POST {{baseUrl}}/api/ai/quiz
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "difficulty": "débutant"
+}
+```
+
+#### **Conseils d'Amélioration**
+```json
+POST {{baseUrl}}/api/ai/improvement-tips
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "stats": "Parties jouées: 50, Victoires: 20, Défaites: 25, Nulles: 5. ELO: 1200. Problèmes fréquents: perte de matériel en milieu de partie."
+}
+```
+
+#### **Explication de Coup**
+```json
+POST {{baseUrl}}/api/ai/explain-move
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "move": "e4",
+  "position": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+}
+```
+
+### **3. Gestion des Parties**
+
+#### **Créer une Partie**
+```json
+POST {{baseUrl}}/api/games
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "playerBlackId": 2,
+  "timeControl": "BLITZ"
+}
+
+// Script Post-Response :
+pm.test("Game created", function () {
+    pm.response.to.have.status(201);
+    const responseJson = pm.response.json();
+    pm.environment.set("gameId", responseJson.id);
+});
+```
+
+#### **Analyser une Partie**
+```json
+POST {{baseUrl}}/api/ai/analyze
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "gameId": {{gameId}}
+}
+```
+
+#### **Suggérer un Coup**
+```json
+POST {{baseUrl}}/api/ai/suggest-move
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "gameId": {{gameId}},
+  "position": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+}
+```
+
+### **4. Tests de Coups**
+
+#### **Jouer un Coup**
+```json
+POST {{baseUrl}}/api/moves
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "gameId": {{gameId}},
+  "moveNotation": "e4",
+  "fromSquare": "e2",
+  "toSquare": "e4"
+}
+```
+
+## 🔧 **Variables d'Environnement**
+
+### **Pour Railway (Production) :**
 ```bash
-# Base de données
-DATABASE_URL=postgresql://...
+DATABASE_URL=your_postgresql_url
 DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=...
-
-# JWT
-JWT_SECRET=your_secret_key
-JWT_EXPIRATION=86400000
-
-# Mistral AI
-MISTRAL_API_KEY=your_mistral_key
-MISTRAL_API_URL=https://api.mistral.ai/v1
+DATABASE_PASSWORD=your_db_password
+JWT_SECRET=your_jwt_secret
+MISTRAL_API_KEY=your_mistral_api_key
 ```
 
-## 📈 **Performance & Monitoring**
+### **Pour développement local :**
+```bash
+export MISTRAL_API_KEY=your_mistral_api_key
+export JWT_SECRET=your_jwt_secret
+```
 
-- **Health Check** : `/actuator/health`
-- **Métriques** : `/actuator/metrics`
-- **Connection Pool** : HikariCP optimisé
-- **Logging** : Logback avec niveaux configurables
+## 📊 **Tests avec curl**
+
+```bash
+# Health check
+curl -X GET "https://chess-api.up.railway.app/api/ai/health"
+
+# Login et récupération du token
+TOKEN=$(curl -X POST "https://chess-api.up.railway.app/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","password":"password123"}' | jq -r '.token')
+
+# Chat IA
+curl -X POST "https://chess-api.up.railway.app/api/ai/chat" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"message":"Que penses-tu de la défense sicilienne?"}'
+
+# Quiz tactique
+curl -X POST "https://chess-api.up.railway.app/api/ai/quiz" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"difficulty":"intermédiaire"}'
+```
+
+## 🎯 **Ordre de Tests Recommandé**
+
+1. **Health Check** - Vérifier que l'API fonctionne
+2. **Register/Login** - Créer un compte et récupérer le token
+3. **AI Health** - Vérifier que Mistral AI fonctionne
+4. **AI Chat** - Tester la communication avec l'IA
+5. **Quiz** - Tester la génération de quiz
+6. **Create Game** - Créer une partie test
+7. **AI Analysis** - Analyser la partie créée
 
 ## 🚀 **Déploiement**
 
-### **Railway (Production)**
-1. Connecter le repository GitHub
-2. Configurer les variables d'environnement
-3. Railway détecte automatiquement Spring Boot
-4. Déploiement automatique sur push
+L'application est automatiquement déployée sur Railway à chaque push sur la branche main.
 
-### **Docker (Optionnel)**
-```dockerfile
-FROM eclipse-temurin:17-jre-alpine
-COPY target/chess-api-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-```
+**URL de production :** https://chess-api.up.railway.app
 
-## 👨‍💻 **Développeur**
+## 📝 **Contribution**
 
-**Gabriel Morand**
-- 📧 Email : gabriel.morand@example.com
-- 🎓 Projet étudiant - API REST avancée
-- 🗓️ Développé en 2025
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Commit les changements (`git commit -am 'Ajouter nouvelle fonctionnalité'`)
+4. Push vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
+5. Créer une Pull Request
 
-## 📝 **Licence**
+## 📄 **Licence**
 
-Ce projet est développé dans un cadre éducatif.
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ---
 
-<div align="center">
-
-**🏆 Projet terminé avec succès ! 🏆**
-
-Toutes les fonctionnalités demandées ont été implémentées :
-✅ 6+ Resources | ✅ CRUD complet | ✅ JWT Auth | ✅ PostgreSQL | ✅ Swagger | ✅ IA Mistral | ✅ Railway Deploy
-
-[🌐 **Voir la démo live**](https://chess-api.up.railway.app/)
-
-</div>
+**Créé avec ❤️ et ♟️ par Gabriel Morand**

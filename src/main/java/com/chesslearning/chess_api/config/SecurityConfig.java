@@ -41,7 +41,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // ===== ENDPOINTS COMPLÈTEMENT PUBLICS =====
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/ai/**").permitAll()  // ✅ AI COMPLÈTEMENT PUBLIC
+                .requestMatchers("/api/ai/**").permitAll()  
+                .requestMatchers("/api/users/me").permitAll()  
                 .requestMatchers("/", "/health", "/readme", "/api/info").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 

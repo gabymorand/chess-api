@@ -1,46 +1,454 @@
 {
-  "info": { "name": "♟️ Chess API - CLEAN" },
-  "variable": [
-    { "key": "base_url", "value": "https://chess-api.up.railway.app" },
-    { "key": "jwt_token", "value": "" }
-  ],
-  "item": [
-    {
-      "name": "🔐 1. REGISTER (FIRST!)",
-      "request": {
-        "method": "POST",
-        "url": "{{base_url}}/api/auth/register",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"user{{$timestamp}}\",\n  \"email\": \"user{{$timestamp}}@test.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"ADMIN\"\n}"
+    "info": {
+        "name": "♟️ Chess API - Collection CORRIGÉE v2",
+        "description": "Collection qui fonctionne avec votre MistralController.java",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "🔑 ÉTAPE 1 - Login Gabriel",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Login successful', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const responseJson = pm.response.json();",
+                            "    if (responseJson.token) {",
+                            "        pm.collectionVariables.set('authToken', responseJson.token);",
+                            "        console.log('🔑 TOKEN SAUVEGARDÉ:', responseJson.token.substring(0, 30) + '...');",
+                            "        console.log('✅ Prêt pour tester les autres endpoints !');",
+                            "    }",
+                            "    if (responseJson.user) {",
+                            "        pm.collectionVariables.set('userId', responseJson.user.id);",
+                            "        console.log('👤 User ID:', responseJson.user.id);",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"username\": \"Gabriel\",\n  \"password\": \"Gabriel\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/login",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "auth", "login"]
+                }
+            }
+        },
+        {
+            "name": "🤖 ÉTAPE 2 - AI Health Check",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ AI Health OK', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    console.log('🔍 AI Health Response:', pm.response.text());",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/health",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "health"]
+                }
+            }
+        },
+        {
+            "name": "🤖 ÉTAPE 3 - Chat with AI",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Chat AI successful', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
+                            "    if (response && response.analysis) {",
+                            "        console.log('💬 AI Response:', response.analysis.substring(0, 100) + '...');",
+                            "    } else {",
+                            "        console.log('💬 AI Response:', JSON.stringify(response, null, 2));",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"message\": \"Peux-tu m'expliquer la défense française aux échecs ?\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/chat",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "chat"]
+                }
+            }
+        },
+        {
+            "name": "🎯 ÉTAPE 4 - Chess Quiz",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Quiz generated', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
+                            "    if (response && response.analysis) {",
+                            "        console.log('🎯 Quiz Response:', response.analysis.substring(0, 100) + '...');",
+                            "    } else {",
+                            "        console.log('🎯 Quiz Response:', JSON.stringify(response, null, 2));",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/quiz?difficulty=beginner",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "quiz"],
+                    "query": [
+                        {
+                            "key": "difficulty",
+                            "value": "beginner"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "💡 ÉTAPE 5 - Improvement Tips",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Tips generated', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
+                            "    if (response && response.analysis) {",
+                            "        console.log('💡 Tips Response:', response.analysis.substring(0, 100) + '...');",
+                            "    } else {",
+                            "        console.log('💡 Tips Response:', JSON.stringify(response, null, 2));",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/tips/improvement?stats=Parties jouées: 30, Victoires: 12, Défaites: 15, ELO: 1150. Problèmes: perte de matériel fréquente.",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "tips", "improvement"],
+                    "query": [
+                        {
+                            "key": "stats",
+                            "value": "Parties jouées: 30, Victoires: 12, Défaites: 15, ELO: 1150. Problèmes: perte de matériel fréquente."
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "🔍 ÉTAPE 6 - Explain Move",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Move explained', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
+                            "    if (response && response.analysis) {",
+                            "        console.log('🔍 Explanation:', response.analysis.substring(0, 100) + '...');",
+                            "    } else {",
+                            "        console.log('🔍 Explanation:', JSON.stringify(response, null, 2));",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/explain/move?move=e4&position=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "explain", "move"],
+                    "query": [
+                        {
+                            "key": "move",
+                            "value": "e4"
+                        },
+                        {
+                            "key": "position",
+                            "value": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "👤 ÉTAPE 7 - My Profile",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Profile retrieved', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    console.log('👤 Profile:', JSON.stringify(response, null, 2));",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/me",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "users", "me"]
+                }
+            }
+        },
+        {
+            "name": "♟️ ÉTAPE 8 - Create Game",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Game created', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 201) {",
+                            "    const response = pm.response.json();",
+                            "    pm.collectionVariables.set('gameId', response.id);",
+                            "    console.log('♟️ Game created with ID:', response.id);",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"whitePlayerId\": {{userId}},\n  \"blackPlayerId\": null,\n  \"gameType\": \"CASUAL\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/games",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "games"]
+                }
+            }
+        },
+        {
+            "name": "🎯 ÉTAPE 9 - Play Move",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Move played', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 201) {",
+                            "    const response = pm.response.json();",
+                            "    console.log('🎯 Move played:', JSON.stringify(response, null, 2));",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"gameId\": {{gameId}},\n  \"move\": \"e4\",\n  \"moveNotation\": \"e2-e4\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/moves",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "moves"]
+                }
+            }
+        },
+        {
+            "name": "🔍 ÉTAPE 10 - Analyze Game",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('✅ Game analyzed', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    // ✅ CORRIGÉ : Utilise 'analysis' au lieu de 'response'",
+                            "    if (response && response.analysis) {",
+                            "        console.log('🔍 Analysis:', response.analysis.substring(0, 100) + '...');",
+                            "    } else {",
+                            "        console.log('🔍 Analysis:', JSON.stringify(response, null, 2));",
+                            "    }",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{authToken}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/ai/analyze/game/{{gameId}}",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["api", "ai", "analyze", "game", "{{gameId}}"]
+                }
+            }
         }
-      }
-    },
-    {
-      "name": "👥 2. Get All Users (PUBLIC)",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/api/users"
-      }
-    },
-    {
-      "name": "♟️ 3. Create Game (WITH JWT)",
-      "request": {
-        "method": "POST",
-        "url": "{{base_url}}/api/games",
-        "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"whitePlayerId\": 1,\n  \"blackPlayerId\": 1,\n  \"timeControl\": \"BLITZ\"\n}"
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "https://chess-api.up.railway.app",
+            "type": "string"
+        },
+        {
+            "key": "authToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "gameId",
+            "value": "1",
+            "type": "string"
         }
-      }
-    },
-    {
-      "name": "📋 4. Get All Games (PUBLIC)",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/api/games"
-      }
-    }
-  ]
+    ]
 }

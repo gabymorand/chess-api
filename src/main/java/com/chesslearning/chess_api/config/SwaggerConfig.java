@@ -24,7 +24,7 @@ public class SwaggerConfig {
                         .description("API for chess learning platform with AI-powered features")
                         .contact(new Contact()
                                 .name("Chess Learning Team")
-                                .email("contact@chesslearning.com")))
+                                .email("Gabrielmorand@gmail.com")))
                 
                 
                 .servers(List.of(
