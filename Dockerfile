@@ -1,4 +1,4 @@
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre-alpine
 
 # Optimisation mémoire pour Railway
 ENV JAVA_OPTS="-Xms128m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication"
