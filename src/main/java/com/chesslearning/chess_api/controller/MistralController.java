@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -147,19 +147,5 @@ public class MistralController {
         return mistralService.chatWithMistral("Hello")
                 .map(response -> ResponseEntity.ok("Mistral AI service is operational"))
                 .onErrorReturn(ResponseEntity.status(503).body("Mistral AI service unavailable"));
-    }
-
-    // ✅ GARDE CES ENDPOINTS DE TEST POUR DEBUG
-    @GetMapping("/test")
-    @Operation(summary = "Test endpoint", description = "Test endpoint for debugging")
-    public ResponseEntity<String> testAuth() {
-        System.out.println("✅ MistralController test endpoint reached!");
-        return ResponseEntity.ok("AI endpoints are now public!");
-    }
-
-    @PostMapping("/test-post")
-    public ResponseEntity<String> testPost(@RequestBody String message) {
-        System.out.println("✅ POST test endpoint reached with: " + message);
-        return ResponseEntity.ok("POST works! Message: " + message);
     }
 }

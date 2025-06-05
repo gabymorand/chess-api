@@ -1,12 +1,16 @@
 package com.chesslearning.chess_api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class MistralRequestDTO {
     
     private String model;
     private List<Message> messages;
+    
+    @JsonProperty("max_tokens")  
     private int maxTokens;
+    
     private double temperature;
     
     public MistralRequestDTO() {}
@@ -18,6 +22,7 @@ public class MistralRequestDTO {
         this.temperature = temperature;
     }
     
+    // Getters et setters existants...
     public String getModel() {
         return model;
     }
@@ -50,6 +55,7 @@ public class MistralRequestDTO {
         this.temperature = temperature;
     }
     
+    // Classe Message interne
     public static class Message {
         private String role;
         private String content;
