@@ -30,21 +30,7 @@ public class UserController {
     private UserService userService;
     
     @Autowired
-    private UserMapper userMapper;
-    
-    @Operation(summary = "Create a new user", description = "Creates a new user account")
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        try {
-            User user = userMapper.toEntity(userCreateDTO);
-            userService.validateUser(user);
-            User createdUser = userService.createUser(user);
-            UserResponseDTO response = userMapper.toResponseDTO(createdUser);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
+    private UserMapper userMapper;    
     
     @Operation(summary = "Get user by ID", description = "Retrieves a user by their ID")
     @GetMapping("/{id}")
