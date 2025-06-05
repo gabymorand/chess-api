@@ -30,7 +30,7 @@ public class MistralController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "500", description = "AI service error")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+    
     public Mono<ResponseEntity<ChessAnalysisResponse>> chatWithAI(@Valid @RequestBody ChatRequestDTO request) {
         return mistralService.chatWithMistral(request.getMessage())
                 .map(response -> {
@@ -46,7 +46,7 @@ public class MistralController {
             @ApiResponse(responseCode = "200", description = "Game analysis completed"),
             @ApiResponse(responseCode = "404", description = "Game not found")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+     
     public Mono<ResponseEntity<ChessAnalysisResponse>> analyzeGame(
             @Parameter(description = "Game ID to analyze") @PathVariable Long gameId) {
         
@@ -64,7 +64,7 @@ public class MistralController {
             @ApiResponse(responseCode = "200", description = "Move suggestion generated"),
             @ApiResponse(responseCode = "404", description = "Game not found")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+    
     public Mono<ResponseEntity<ChessAnalysisResponse>> suggestMove(
             @Parameter(description = "Game ID") @PathVariable Long gameId,
             @Parameter(description = "Current board position") @RequestParam String position) {
@@ -83,7 +83,7 @@ public class MistralController {
             @ApiResponse(responseCode = "200", description = "Move explanation generated"),
             @ApiResponse(responseCode = "400", description = "Invalid move or position")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+     
     public Mono<ResponseEntity<ChessAnalysisResponse>> explainMove(
             @Parameter(description = "Chess move in algebraic notation") @RequestParam String move,
             @Parameter(description = "Board position") @RequestParam String position) {
@@ -102,7 +102,7 @@ public class MistralController {
             @ApiResponse(responseCode = "200", description = "Quiz generated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid difficulty level")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+     
     public Mono<ResponseEntity<ChessAnalysisResponse>> generateQuiz(
             @Parameter(description = "Difficulty level: beginner, intermediate, advanced") 
             @RequestParam(defaultValue = "intermediate") String difficulty) {
@@ -125,7 +125,7 @@ public class MistralController {
             @ApiResponse(responseCode = "200", description = "Tips generated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid statistics")
     })
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // ✅ ENLEVÉ - PUBLIC
+     
     public Mono<ResponseEntity<ChessAnalysisResponse>> getImprovementTips(
             @Parameter(description = "Player statistics in text format") @RequestParam String stats) {
         

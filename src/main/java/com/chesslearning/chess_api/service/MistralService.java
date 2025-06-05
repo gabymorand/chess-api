@@ -54,11 +54,8 @@ public class MistralService {
         logger.info("🌐 API URL: {}", apiUrl);
         logger.info("🤖 Modèle utilisé: {}", defaultModel);
 
-        // Vérification de la clé API
-        if (apiKey == null || apiKey.isEmpty() || "l3WguwUpqE0xYijOoNq6LzxqtlFhEAnv".equals(apiKey)) {
-            logger.error("❌ ERREUR: Clé API Mistral non configurée ou invalide!");
-            return Mono.just("Erreur: Clé API Mistral non configurée. Veuillez configurer MISTRAL_API_KEY.");
-        }
+
+
         
         String systemPrompt = """
             Tu es un expert en échecs, passionné et pédagogue. 
