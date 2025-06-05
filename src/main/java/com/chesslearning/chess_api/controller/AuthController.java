@@ -79,8 +79,6 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<String> logout() {
-        // Dans une application JWT stateless, le logout est généralement géré côté client
-        // en supprimant le token du stockage local/session storage
         return ResponseEntity.ok("Logout successful. Please remove the token from client storage.");
     }
 

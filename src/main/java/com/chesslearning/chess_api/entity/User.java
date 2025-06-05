@@ -39,7 +39,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
     
-    // NOUVEAUX CHAMPS AJOUTÉS
+    // Check le swagger pour le probléme de body proposé
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
     @Column(name = "first_name", nullable = false, length = 50)
@@ -74,7 +74,6 @@ public class User implements UserDetails {
         this.role = role;
     }
     
-    // NOUVEAU CONSTRUCTEUR COMPLET
     public User(String username, String email, String password, String firstName, String lastName, Role role) {
         this();
         this.username = username;
@@ -85,7 +84,7 @@ public class User implements UserDetails {
         this.role = role;
     }
     
-    // UserDetails implementation - toutes ces méthodes sont ignorées dans JSON
+    // Probleme de role avec le JWT, je sais pas d'ou ca vient mais spring corrige un truc et postman le le fait
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

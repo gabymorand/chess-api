@@ -31,11 +31,9 @@ public class GameMapper {
         game.setPlayerWhite(playerWhite);
         game.setPlayerBlack(playerBlack);
         game.setTimeControl(dto.getTimeControl());
-        
-        // ✅ AUTO-GÉNÉRER les champs qui ne sont pas dans le DTO
         game.setResult(GameResult.ONGOING);
         game.setGameDate(LocalDateTime.now());
-        // pgnData reste null (optionnel)
+        //ca planter ici a cause de la date -> dt 
         
         return game;
     }

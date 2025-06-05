@@ -48,7 +48,7 @@ public class GameController {
             System.out.println("PlayerBlackId: " + gameCreateDTO.getPlayerBlackId());
             System.out.println("TimeControl: " + gameCreateDTO.getTimeControl());
             
-            // ✅ UTILISE LE MAPPER CORRIGÉ
+            
             Game game = gameMapper.toEntity(gameCreateDTO);
             System.out.println("✅ Game entity created via mapper");
             
@@ -132,7 +132,6 @@ public class GameController {
             @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
         
         try {
-            // ✅ RÉCUPÉRER L'UTILISATEUR PAR SON ID
             User player = userService.getUserById(playerId)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
             
